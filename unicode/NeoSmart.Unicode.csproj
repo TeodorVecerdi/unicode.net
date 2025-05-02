@@ -1,9 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <Version>2.1.0</Version>
-        <Authors>Mahmoud Al-Qudsi, neosmart</Authors>
-        <Company>NeoSmart Technologies</Company>
+        <Version>2.1.1</Version>
+        <Authors>Mahmoud Al-Qudsi, neosmart, Teodor Vecerdi &lt;teodor@vecerdi.ai&gt;</Authors>
         <Description>A Unicode and emoji text-processing library for .NET, supporting UTF-8, UTF-16, and UTF-32 on .NET 2.0+ and .NET Standard (Core/UWP), with emoji support! 🔥🌶️😁🎉</Description>
         <Copyright>Copyright NeoSmart Technologies 2017 - 2021</Copyright>
         <License>MIT</License>
