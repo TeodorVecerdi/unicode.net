@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Version>2.0.0</Version>
+        <Authors>Mahmoud Al-Qudsi, neosmart</Authors>
+        <Company>NeoSmart Technologies</Company>
+        <Description>A Unicode and emoji text-processing library for .NET, supporting UTF-8, UTF-16, and UTF-32 on .NET 2.0+ and .NET Standard (Core/UWP), with emoji support! 🔥🌶️😁🎉</Description>
+        <Copyright>Copyright NeoSmart Technologies 2017 - 2021</Copyright>
+        <License>MIT</License>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <LangVersion>preview</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NeoSmart.Collections" Version="1.1.0"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' != 'net5'">
+        <PackageReference Include="System.Memory" Version="4.5.4"/>
+    </ItemGroup>
+
+</Project>
