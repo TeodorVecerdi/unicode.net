@@ -22,13 +22,13 @@ public class MultiRange {
 
     public bool Contains(Codepoint codepoint) {
         var index = m_Ranges.IndexOf(new Range(codepoint));
-        if (index > 0) {
+        if (index >= 0) {
             return true;
         }
 
         // No match, value is complement of Count or next greatest index
         index = ~index;
-        if (index == 0) {
+        if (index <= 0) {
             return false;
         }
 
