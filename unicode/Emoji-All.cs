@@ -1,39 +1,24 @@
-using System.Collections.Generic;
-
-#if NETSTANDARD_1_3_OR_GREATER
 using NeoSmart.Collections;
-#endif
 
-namespace NeoSmart.Unicode
-{
-    // This file is machine-generated from the official Unicode Consortium UTR51 emoji
-    // list found in Unicode 16.0. See the `importers` folder for the generator.
+namespace NeoSmart.Unicode;
+// This file is machine-generated from the official Unicode Consortium UTR51 emoji
+// list found in Unicode 16.0. See the `importers` folder for the generator.
 
-    public static partial class Emoji
-    {
-#if NETSTANDARD_1_3_OR_GREATER
-        public static SortedList<SingleEmoji> All
-#else
-        public static List<SingleEmoji> All
-#endif
-        {
-            get
-            {
-                if (_All == null)
-                {
-                    _All = GenerateAll();
-                }
-                return _All;
+public static partial class Emoji {
+    public static SortedList<SingleEmoji> All {
+        get {
+            if (s_All == null) {
+                s_All = GenerateAll();
             }
+
+            return s_All;
         }
-#if NETSTANDARD_1_3_OR_GREATER
-        private static SortedList<SingleEmoji>? _All;
-        private static SortedList<SingleEmoji> GenerateAll() => new ()
-#else
-        private static List<SingleEmoji> _All;
-        private static List<SingleEmoji> GenerateAll() => new ()
-#endif
-        {
+    }
+
+    private static SortedList<SingleEmoji>? s_All;
+
+    private static SortedList<SingleEmoji> GenerateAll() {
+        return new SortedList<SingleEmoji> {
             /* 😀 */ GrinningFace,
             /* 😃 */ GrinningFaceWithBigEyes,
             /* 😄 */ GrinningFaceWithSmilingEyes,

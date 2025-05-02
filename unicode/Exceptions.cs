@@ -1,19 +1,12 @@
 ﻿using System;
 
-namespace NeoSmart.Unicode
-{
-    public class UnsupportedCodepointException : Exception
-    {
-        public UnsupportedCodepointException()
-        {}
+namespace NeoSmart.Unicode;
 
-        public UnsupportedCodepointException(string message) : base(message)
-        {}
-    }
+public class UnsupportedCodepointException : Exception {
+    public UnsupportedCodepointException() { }
 
-    public class InvalidRangeException : Exception
-    { }
-
-    public class InvalidEncodingException : Exception
-    { }
+    public UnsupportedCodepointException(string message) : base(message) { }
 }
+
+public class InvalidRangeException : Exception { }
+public class InvalidEncodingException : Exception { }

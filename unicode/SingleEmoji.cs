@@ -2,80 +2,65 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace NeoSmart.Unicode
-{
-    // We hereby declare emoji to be a zero plural marker noun (in short, "emoji" is both the
-    // singular and the plural form). This class refers to emoji in the singular.
-    public readonly struct SingleEmoji : IComparable<SingleEmoji>, IEquatable<SingleEmoji>
-    {
-        static readonly string[] NoTerms = new string[] { };
-        public readonly UnicodeSequence Sequence;
-        public readonly string Name;
-        public readonly string[] SearchTerms;
-        public readonly int SortOrder;
-        public readonly string Group;
-        public readonly string Subgroup;
+namespace NeoSmart.Unicode;
 
-        public SingleEmoji(UnicodeSequence sequence, string name = "", string[]? searchTerms = null, int sortOrder = -1, string group = "", string subgroup = "")
-        {
-            Sequence = sequence;
-            Name = name;
-            SearchTerms = searchTerms ?? NoTerms;
-            SortOrder = sortOrder;
-            Group = group;
-            Subgroup = subgroup;
-        }
+// We hereby declare emoji to be a zero plural marker noun (in short, "emoji" is both the
+// singular and the plural form). This class refers to emoji in the singular.
+public readonly struct SingleEmoji : IComparable<SingleEmoji>, IEquatable<SingleEmoji> {
+    private static readonly string[] s_NoTerms = [];
+    public readonly UnicodeSequence Sequence;
+    public readonly string Name;
+    public readonly string[] SearchTerms;
+    public readonly int SortOrder;
+    public readonly string Group;
+    public readonly string Subgroup;
 
-        public int CompareTo(SingleEmoji other)
-        {
-            if (SortOrder < 0)
-            {
-                return Sequence.CompareTo(other.Sequence);
-            }
-            else
-            {
-                return SortOrder.CompareTo(other.SortOrder);
-            }
-        }
+    public SingleEmoji(UnicodeSequence sequence, string name = "", string[]? searchTerms = null, int sortOrder = -1, string group = "", string subgroup = "") {
+        Sequence = sequence;
+        Name = name;
+        SearchTerms = searchTerms ?? s_NoTerms;
+        SortOrder = sortOrder;
+        Group = group;
+        Subgroup = subgroup;
+    }
 
-        public static bool operator ==(SingleEmoji a, SingleEmoji b)
-        {
-            return a.Sequence == b.Sequence;
+    public int CompareTo(SingleEmoji other) {
+        if (SortOrder < 0) {
+            return Sequence.CompareTo(other.Sequence);
+        } else {
+            return SortOrder.CompareTo(other.SortOrder);
         }
+    }
 
-        public static bool operator !=(SingleEmoji a, SingleEmoji b)
-        {
-            return !(a == b);
-        }
+    public static bool operator ==(SingleEmoji a, SingleEmoji b) {
+        return a.Sequence == b.Sequence;
+    }
 
-        public static bool operator <(SingleEmoji a, SingleEmoji b)
-        {
-            return a.CompareTo(b) < 0;
-        }
+    public static bool operator !=(SingleEmoji a, SingleEmoji b) {
+        return !(a == b);
+    }
 
-        public static bool operator >(SingleEmoji a, SingleEmoji b)
-        {
-            return a.CompareTo(b) > 0;
-        }
+    public static bool operator <(SingleEmoji a, SingleEmoji b) {
+        return a.CompareTo(b) < 0;
+    }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is SingleEmoji emoji && Equals(emoji);
-        }
+    public static bool operator >(SingleEmoji a, SingleEmoji b) {
+        return a.CompareTo(b) > 0;
+    }
 
-        public override int GetHashCode()
-        {
-            return Sequence.GetHashCode();
-        }
+    public override bool Equals(object? obj) {
+        return obj is SingleEmoji emoji && Equals(emoji);
+    }
 
-        public override string ToString()
-        {
-            return Encoding.Unicode.GetString(Sequence.AsUtf16Bytes().ToArray());
-        }
+    public override int GetHashCode() {
+        return Sequence.GetHashCode();
+    }
 
-        public bool Equals(SingleEmoji other)
-        {
-            return Sequence.Equals(other.Sequence);
-        }
+    public override string ToString() {
+        return Encoding.Unicode.GetString(Sequence.AsUtf16Bytes().ToArray());
+    }
+
+    public bool Equals(SingleEmoji other) {
+        return Sequence.Equals(other.Sequence);
     }
 }

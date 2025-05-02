@@ -1,42 +1,27 @@
-using System.Collections.Generic;
-
-#if NETSTANDARD_1_3_OR_GREATER
 using NeoSmart.Collections;
-#endif
 
-namespace NeoSmart.Unicode
-{
-    // This file is machine-generated from the official Unicode Consortium UTR51 emoji
-    // list found in Unicode 16.0. See the `importers` folder for the generator.
+namespace NeoSmart.Unicode;
+// This file is machine-generated from the official Unicode Consortium UTR51 emoji
+// list found in Unicode 16.0. See the `importers` folder for the generator.
 
-    public static partial class Emoji
-    {
-        /// <summary>
-        /// A (sorted) enumeration of all emoji without skin variations and no duplicate gendered vs gender-neutral emoji, ideal for displaying. Emoji without supported glyphs in Segoe UI Emoji are also omitted from this list.
-        /// </summary>
-#if NETSTANDARD_1_3_OR_GREATER
-        public static SortedList<SingleEmoji> Basic
-#else
-        public static List<SingleEmoji> Basic
-#endif
-        {
-            get
-            {
-                if (_Basic == null)
-                {
-                    _Basic = GenerateBasic();
-                }
-                return _Basic;
+public static partial class Emoji {
+    /// <summary>
+    /// A (sorted) enumeration of all emoji without skin variations and no duplicate gendered vs gender-neutral emoji, ideal for displaying. Emoji without supported glyphs in Segoe UI Emoji are also omitted from this list.
+    /// </summary>
+    public static SortedList<SingleEmoji> Basic {
+        get {
+            if (s_Basic == null) {
+                s_Basic = GenerateBasic();
             }
+
+            return s_Basic;
         }
-#if NETSTANDARD_1_3_OR_GREATER
-        private static SortedList<SingleEmoji>? _Basic;
-        private static SortedList<SingleEmoji> GenerateBasic() => new ()
-#else
-        private static List<SingleEmoji> _Basic;
-        private static List<SingleEmoji> GenerateBasic() => new ()
-#endif
-        {
+    }
+
+    private static SortedList<SingleEmoji>? s_Basic;
+
+    private static SortedList<SingleEmoji> GenerateBasic() {
+        return new SortedList<SingleEmoji> {
             /* 😀 */ GrinningFace,
             /* 😃 */ GrinningFaceWithBigEyes,
             /* 😄 */ GrinningFaceWithSmilingEyes,

@@ -1,169 +1,136 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
-namespace NeoSmart.Unicode
-{
+namespace NeoSmart.Unicode;
+
+/// <summary>
+/// A <c>Range</c> constitutes a range of <see>Codepoint</see> defined by the
+/// <c>Begin</c> and <c>End</c> values, both of which are inclusive.
+/// </summary>
+public class Range : IComparable<Range>, IEquatable<Range> {
     /// <summary>
-    /// A <c>Range</c> constitutes a range of <see>Codepoint</see> defined by the
-    /// <c>Begin</c> and <c>End</c> values, both of which are inclusive.
+    /// The first codepoint in the range, inclusive.
     /// </summary>
-    public class Range : IComparable<Range>, IEquatable<Range>
-    {
-        /// <summary>
-        /// The first codepoint in the range, inclusive.
-        /// </summary>
-        public readonly Codepoint Begin;
-        /// <summary>
-        /// The last codepoint in the range, inclusive.
-        /// </summary>
-        public readonly Codepoint End;
+    public readonly Codepoint Begin;
+    /// <summary>
+    /// The last codepoint in the range, inclusive.
+    /// </summary>
+    public readonly Codepoint End;
 
-        /// <summary>
-        /// Create a range constituting <c>Begin</c> and <c>End</c> codepoints. The two
-        /// values may be the same, but <paramref name="begin"/> must be less than or
-        /// equal to <paramref name="end"/>
-        /// </summary>
-        public Range(Codepoint begin, Codepoint end)
-        {
-            Begin = begin;
-            End = end;
+    /// <summary>
+    /// Create a range constituting <c>Begin</c> and <c>End</c> codepoints. The two
+    /// values may be the same, but <paramref name="begin"/> must be less than or
+    /// equal to <paramref name="end"/>
+    /// </summary>
+    public Range(Codepoint begin, Codepoint end) {
+        Begin = begin;
+        End = end;
+    }
+
+    /// <summary>
+    /// Create a range constituting a single codepoint (<c>Begin == End</c>).
+    /// </summary>
+    public Range(Codepoint value) {
+        Begin = value;
+        End = value;
+    }
+
+    public bool Contains(Codepoint codepoint) {
+        return codepoint >= Begin && codepoint <= End;
+    }
+
+    private static readonly string[] s_RangeSplit = new[] { "-", "–", "—", ".." };
+    // Either a single hex codepoint or two separated by a hyphen
+
+    /// <summary>
+    /// Create a range from a string (hexadecimal) description of the range. A range
+    /// may be a single codepoint (in which case <c>Begin == End</c>) or a start and
+    /// end codepoint separated by a hyphen or two dots.
+    ///
+    /// Examples of valid ranges: <c>Range("0030..0039")</c>, <c>Range("0040")</c>,
+    /// and <c>Range("0600–06FF")</c>
+    /// </summary>
+    public Range(string range) {
+        // These are all different hyphens used on Wikipedia and in the UTR
+        var values = range.Split(s_RangeSplit, StringSplitOptions.RemoveEmptyEntries);
+        Begin = uint.Parse(values[0], NumberStyles.HexNumber);
+
+        if (values.Length == 1) {
+            End = Begin;
+        } else if (values.Length == 2) {
+            End = uint.Parse(values[1], NumberStyles.HexNumber);
+        } else {
+            throw new InvalidRangeException();
         }
+    }
 
-        /// <summary>
-        /// Create a range constituting a single codepoint (<c>Begin == End</c>).
-        /// </summary>
-        public Range(Codepoint value)
-        {
-            Begin = value;
-            End = value;
-        }
-
-        public bool Contains(Codepoint codepoint)
-        {
-            return codepoint >= Begin && codepoint <= End;
-        }
-
-        static readonly string[] RangeSplit = new[] { "-", "–", "—", ".." };
-        // Either a single hex codepoint or two separated by a hyphen
-
-        /// <summary>
-        /// Create a range from a string (hexadecimal) description of the range. A range
-        /// may be a single codepoint (in which case <c>Begin == End</c>) or a start and
-        /// end codepoint separated by a hyphen or two dots.
-        ///
-        /// Examples of valid ranges: <c>Range("0030..0039")</c>, <c>Range("0040")</c>,
-        /// and <c>Range("0600–06FF")</c>
-        /// </summary>
-        public Range(string range)
-        {
-            // These are all different hyphens used on Wikipedia and in the UTR
-            var values = range.Split(RangeSplit, StringSplitOptions.RemoveEmptyEntries);
-            Begin = UInt32.Parse(values[0], System.Globalization.NumberStyles.HexNumber);
-
-            if (values.Length == 1)
-            {
-                End = Begin;
-            }
-            else if (values.Length == 2)
-            {
-                End = UInt32.Parse(values[1], System.Globalization.NumberStyles.HexNumber);
-            }
-            else
-            {
-                throw new InvalidRangeException();
+    public IEnumerable<uint> AsUtf32Sequence {
+        get {
+            for (uint i = 0; Begin + i <= End; ++i) {
+                yield return new Codepoint(Begin + i).AsUtf32();
             }
         }
+    }
 
-        public IEnumerable<UInt32> AsUtf32Sequence
-        {
-            get
-            {
-                for (UInt32 i = 0; Begin + i <= End; ++i)
-                {
-                    yield return new Codepoint(Begin + i).AsUtf32();
+    public IEnumerable<ushort> AsUtf16Sequence {
+        get {
+            for (var i = 0; Begin + i <= End; ++i) {
+                foreach (var utf16 in new Codepoint(Begin + i).AsUtf16()) {
+                    yield return utf16;
                 }
             }
         }
+    }
 
-        public IEnumerable<UInt16> AsUtf16Sequence
-        {
-            get
-            {
-                for (var i = 0; Begin + i <= End; ++i)
-                {
-                    foreach (var utf16 in new Codepoint(Begin + i).AsUtf16())
-                    {
-                        yield return utf16;
-                    }
+    public IEnumerable<byte> AsUtf8Sequence {
+        get {
+            for (var i = 0; Begin + i <= End; ++i) {
+                foreach (var utf8 in new Codepoint(Begin + i).AsUtf8()) {
+                    yield return utf8;
                 }
             }
         }
+    }
 
-        public IEnumerable<byte> AsUtf8Sequence
-        {
-            get
-            {
-                for (var i = 0; Begin + i <= End; ++i)
-                {
-                    foreach (var utf8 in new Codepoint(Begin + i).AsUtf8())
-                    {
-                        yield return utf8;
-                    }
-                }
-            }
+    public int CompareTo(Range? other) {
+        if (other is null) {
+            return 1;
         }
 
-        public int CompareTo(Range? other)
-        {
-            if (other is null)
-            {
-                return 1;
-            }
-
-            int compare = (int)Begin.Value - (int)other.Begin.Value;
-            if (compare != 0)
-            {
-                return compare;
-            }
-
-            return End.CompareTo(other.End);
+        var compare = (int)Begin.Value - (int)other.Begin.Value;
+        if (compare != 0) {
+            return compare;
         }
 
-        public bool Equals(Range? other)
-        {
-            return other is Range range
-                && Begin == range.Begin
-                && End == range.End;
+        return End.CompareTo(other.End);
+    }
+
+    public bool Equals(Range? other) {
+        return other != null && Begin == other.Begin && End == other.End;
+    }
+
+    public override bool Equals(object? obj) {
+        return obj is Range other && Equals(other);
+    }
+
+    public override int GetHashCode() {
+        return Begin.GetHashCode() ^ End.GetHashCode();
+    }
+
+    public static bool operator ==(Range? lhs, Range? rhs) {
+        if (lhs is null || rhs is null) {
+            return Equals(lhs, rhs);
         }
 
-        public override bool Equals(Object? obj)
-        {
-            return obj is Range other && Equals(other);
-        }
+        return lhs.Equals(rhs);
+    }
 
-        public override int GetHashCode()
-        {
-            return Begin.GetHashCode() ^ End.GetHashCode();
-        }
+    public static bool operator !=(Range? lhs, Range? rhs) {
+        return !(lhs == rhs);
+    }
 
-        public static bool operator ==(Range? lhs, Range? rhs)
-        {
-            if (lhs is null || rhs is null)
-            {
-                return object.Equals(lhs, rhs);
-            }
-
-            return lhs.Equals(rhs);
-        }
-
-        public static bool operator !=(Range? lhs, Range? rhs)
-        {
-            return !(lhs == rhs);
-        }
-
-        public override string ToString()
-        {
-            return $"{Begin}..{End}";
-        }
+    public override string ToString() {
+        return $"{Begin}..{End}";
     }
 }
