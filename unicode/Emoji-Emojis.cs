@@ -1,5 +1,3 @@
-using NeoSmart.Collections;
-
 namespace NeoSmart.Unicode;
 
 // This file is machine-generated from the official Unicode Consortium UTR51 emoji
